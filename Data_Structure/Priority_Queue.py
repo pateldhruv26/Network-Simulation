@@ -1,17 +1,18 @@
 class MinHeap:
     def __init__(self):
         self.heap = []
-    
+
     def parent(self, index):
         return (index - 1) // 2
-    
+
     def left_child(self, index):
         return index * 2 + 1
-    
+
     def right_child(self, index):
         return index * 2 + 2
-    
+
     def insert(self, val):
+        # Insert a new element (list of [cost, pcID])
         self.heap.append(val)
         self._heapify_up(len(self.heap) - 1)
 
@@ -27,7 +28,7 @@ class MinHeap:
         return min_val
 
     def _heapify_up(self, index):
-        while index > 0 and self.heap[self.parent(index)] > self.heap[index]:
+        while index > 0 and self.heap[self.parent(index)][0] > self.heap[index][0]:
             self.heap[index], self.heap[self.parent(index)] = self.heap[self.parent(index)], self.heap[index]
             index = self.parent(index)
 
@@ -38,9 +39,9 @@ class MinHeap:
         left_index = self.left_child(index)
         right_index = self.right_child(index)
 
-        if left_index < size and self.heap[left_index] < self.heap[smallest]:
+        if left_index < size and self.heap[left_index][0] < self.heap[smallest][0]:
             smallest = left_index
-        if right_index < size and self.heap[right_index] < self.heap[smallest]:
+        if right_index < size and self.heap[right_index][0] < self.heap[smallest][0]:
             smallest = right_index
         
         if smallest != index:
@@ -58,10 +59,11 @@ class PriorityQueue:
     def __init__(self):
         self.min_heap = MinHeap()
 
-    def add(self, val):
-        self.min_heap.insert(val)
+    def push(self, cost, pcID):
+        # Push a new item as a list [cost, pcID]
+        self.min_heap.insert([cost, pcID])
 
-    def remove(self):
+    def pop(self):
         return self.min_heap.extract_min()
 
     def peek(self):
@@ -69,3 +71,6 @@ class PriorityQueue:
 
     def print_queue(self):
         self.min_heap.print_heap()
+
+    def isEmpty(self):
+        return len(self.min_heap.heap) == 0
