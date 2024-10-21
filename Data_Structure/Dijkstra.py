@@ -1,15 +1,25 @@
 from Data_Structure.Priority_Queue import PriorityQueue
 
 def shortestPathAlgo(srcId,pc_hash):
-    distance = {key: float('inf') for key in pc_hash.keys()}
+    n=len(pc_hash)
+    n=n+1
+    distance = [float('inf')] * n
+
+    via = [float('-1')] * n
+    parent = [float('-1')] * n
+
+    linksUsed = set()
     distance[srcId]=0
+    via[srcId]=srcId
     pq=PriorityQueue()
-    pq.push(0,srcId) # Distance,ID
+    pq.push([0,srcId,srcId]) # Distance,ID
+    parent[srcId]=srcId
 
     while not pq.isEmpty():
         top_PC = pq.pop()
         topDist = top_PC[0]
-        topID = top_PC[1]
+        topID = top_PC[1] 
+        topVia = top_PC[2]   
 
         node=pc_hash[topID]
 
@@ -21,6 +31,11 @@ def shortestPathAlgo(srcId,pc_hash):
 
             if newDistance < distance[neighbourID]:
                 distance[neighbourID] = newDistance
-                pq.push(newDistance, neighbourID)
+                parent[neighbourID]=topID
+                via[neighbourID]=topVia
+                pq.push([newDistance, neighbourID,neighbourID if topID==srcId else topID])
+    
+    for id in pc_hash:
+        linksUsed.add(str(min(id,parent[id]))+"Connects"+str(max(id,parent[id])))
 
-    return distance
+    return distance,via,linksUsed

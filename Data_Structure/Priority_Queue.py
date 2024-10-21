@@ -59,9 +59,9 @@ class PriorityQueue:
     def __init__(self):
         self.min_heap = MinHeap()
 
-    def push(self, cost, pcID):
-        # Push a new item as a list [cost, pcID]
-        self.min_heap.insert([cost, pcID])
+    def push(self, list):
+        # Push a new item as a list of [cost, pcID,parent]
+        self.min_heap.insert(list)
 
     def pop(self):
         return self.min_heap.extract_min()

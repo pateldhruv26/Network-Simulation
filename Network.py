@@ -19,6 +19,9 @@ newPC.updatePcHashTable(newPC)
 newPC = PCNode(6)
 newPC.updatePcHashTable(newPC)
 
+newPC = PCNode(7)
+newPC.updatePcHashTable(newPC)
+
 pc_hash[1].addNeighbour(2, 40, 0)
 pc_hash[1].addNeighbour(3, 10, 0)
 pc_hash[1].addNeighbour(4, 15, 0)
@@ -33,8 +36,11 @@ pc_hash[4].addNeighbour(6, 10, 0)
 
 pc_hash[5].addNeighbour(6, 5, 0)
 
+pc_hash[6].addNeighbour(7, 1, 0)
+
 
 pc_hash[1].makeRoutingTable()
+# pc_hash[4].makeRoutingTable()
 
 
 # Shortest distances from source node 1: {1: 0, 2: 40, 3: 10, 4: 15, 5: 30, 6: 40}
