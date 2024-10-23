@@ -23,9 +23,9 @@ def shortestPathAlgo(srcId,pc_hash):
 
         node=pc_hash[topID]
 
-        for neighbourPC in node.neighbourList:
-            neighbourID = neighbourPC[0]
-            neighbourCost = neighbourPC[1]
+        for key,value in node.neighbourList.items():
+            neighbourID = key
+            neighbourCost = value
 
             newDistance=topDist + neighbourCost
 
@@ -36,6 +36,8 @@ def shortestPathAlgo(srcId,pc_hash):
                 pq.push([newDistance, neighbourID,neighbourID if topID==srcId else topID])
     
     for id in pc_hash:
-        linksUsed.add(str(min(id,parent[id]))+"Connects"+str(max(id,parent[id])))
+        if parent[id] != -1 and id != parent[id]:
+            linksUsed.add(str(min(id,parent[id]))+"Connects"+str(max(id,parent[id])))
+            
 
     return distance,via,linksUsed
