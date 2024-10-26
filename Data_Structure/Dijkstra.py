@@ -33,7 +33,8 @@ def shortestPathAlgo(srcId,pc_hash):
                 distance[neighbourID] = newDistance
                 parent[neighbourID]=topID
                 via[neighbourID]=topVia
-                pq.push([newDistance, neighbourID,neighbourID if topID==srcId else topID])
+                # print(top_PC,neighbourID)
+                pq.push([newDistance, neighbourID,neighbourID if topID==srcId else topVia])
     
     for id in pc_hash:
         if parent[id] != -1 and id != parent[id]:

@@ -123,9 +123,9 @@ print(pc_hash[1].routingTable)
 pathTracing(1,7)
 
 
-deleteLinks(4,6)
-deleteLinks(2,3)
-deleteLinks(6,7)
+# deleteLinks(4,6)
+# deleteLinks(2,3)
+# deleteLinks(6,7)
 
 
 pathTracing(1,7)
