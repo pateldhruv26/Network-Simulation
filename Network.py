@@ -30,7 +30,7 @@ def addNewPC():
     PCNode(newId)
     if len(newPCId) == 0:
         heapq.heappush(newPCId,newId+1)
-
+    print("New PC ID is",newId)
 
 def removePC(id):
     if id in pc_hash:
@@ -117,10 +117,10 @@ printActivePC()
 
 # makeNetwork()
 
-addLinks()
-print(pc_hash[1].routingTable)
+# addLinks()
+# print(pc_hash[1].routingTable)
 
-pathTracing(1,7)
+# pathTracing(1,7)
 
 
 # deleteLinks(4,6)
@@ -128,10 +128,51 @@ pathTracing(1,7)
 # deleteLinks(6,7)
 
 
-pathTracing(1,7)
+# pathTracing(1,7)
 
 # addLinks()
 
+# addNewPc, addLinks, routing table print, pathTracing, remove pc, active pc
 
+def menu(option):
+    match option:
+        case '1':
+            addNewPC()
+            print("New PC added.")
+        case '2':
+            addLinks()
+            print("Links added.")
+        case '3':
+            pcId = int(input("Enter PC ID to print routing table: "))
+            if pcId in pc_hash:
+                print(pc_hash[pcId].routingTable)
+            else:
+                print("PC does not exist.")
+        case '4':
+            pc1Id = int(input("Enter PC1 ID: "))
+            pc2Id = int(input("Enter PC2 ID: "))
+            pathTracing(pc1Id, pc2Id)
+        case '5':
+            pcId = int(input("Enter PC ID to remove: "))
+            removePC(pcId)
+            print("PC removed if it existed.")
+        case '6':
+            print("Currently active PCs:")
+            printActivePC()
+        case _:
+            print("Invalid option. Please try again.")
 
-# Shortest distances from source node 1: {1: 0, 2: 40, 3: 10, 4: 15, 5: 30, 6: 40}
+while True:
+    print("\nSelect an option")
+    print("1 : Add a New PC to the Network")
+    print("2 : Add Links between 2 PCs")
+    print("3 : Print Routing Table of PC")
+    print("4 : Print shortest path from one PC to another")
+    print("5 : Remove a PC from the Network")
+    print("6 : Print currently Active PCs")
+    print("7 : Exit")
+
+    option = input("Enter your choice: ")
+    if option == '7':
+        break
+    menu(option)
