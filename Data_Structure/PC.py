@@ -1,11 +1,3 @@
-# from Data_Structure import greet
-
-# print(Data_Structure.greet())      # Output: Hello from module 1!
-# print(Data_Structure.farewell())
-
-# from Data_Structure.Priority_Queue import greet
-# print(greet())
-
 from Data_Structure.Dijkstra import shortestPathAlgo
 pc_hash={}
 
@@ -34,18 +26,6 @@ class PCNode:
         for key in pc_hash:
             if linkId in pc_hash[key].linksUsed:
                 pc_hash[key].makeRoutingTable()
-
-    
-    
-    # #To run makeRoutingTable from outside
-    # def addNeighbour(self,neighbourId,cost,flag):
-    #     self.neighbourList[neighbourId]=cost
-    #     neighbourPc = pc_hash[neighbourId]
-
-    #     if(flag==0):
-    #         neighbourPc.addNeighbour(self.id,cost,1)
-
-
     
     #To run makeRoutingTable from outside
     def removePC(self):
@@ -61,14 +41,5 @@ class PCNode:
                 self.routingTable.append(pair)
             else:
                 self.routingTable[ind] = pair
-
-        # print(self.id,self.routingTable,self.linksUsed)
-
-
-        #adj list,
-
-        #Dijkstra (id,pc_hash) 1st -> add -> neighbourList
-        # 1-> 2,3,4
-
     
     
