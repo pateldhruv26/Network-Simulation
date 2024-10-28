@@ -1,9 +1,12 @@
 from Data_Structure.PC import PCNode,pc_hash
 import heapq
 import time
+import graphviz
+import networkx as nx
+
 newPCId=[1]
 activePC = set()
-
+graph = nx.Graph()
 heapq.heapify(newPCId)
 
 def addNewPCs():
@@ -12,6 +15,7 @@ def addNewPCs():
         newId = heapq.heappop(newPCId)
         PCNode(newId)
         activePC.add(newId)
+        graph.add_node(newId)
         if len(newPCId) == 0:
             heapq.heappush(newPCId,newId+1)
         
@@ -20,22 +24,31 @@ def addNewPCs():
 
 def addLinks():
     linksToAdd = int(input("Enter Number of Links To Add: "))
+    links=[]
     while linksToAdd>0:
         pc1Id,pc2Id,cost=map(int, input("Enter <PC1 id,PC2 id,Cost>: ").split())
-        if pc1Id in pc_hash and pc2Id in pc_hash:
-            pc_hash[pc1Id].addLink(pc2Id,cost)
+        if pc1Id in pc_hash and pc2Id in pc_hash and pc1Id!=pc2Id:
+            links.append([pc1Id,pc2Id,cost])
+            linksToAdd-=1
     
         else:
-            print("One or both PC does not exsist")
-        
-        linksToAdd-=1;
-
+            if pc1Id not in pc_hash:
+                print("PC1 does not exsist")
+            elif pc2Id not in pc_hash:
+                print("PC2 does not exsist")
+            else:
+                print("Same PC not allowed")
+    
+    for link in links:
+        pc_hash[link[0]].addLink(link[1],link[2])
+        graph.add_edge(link[0],link[1],cost=link[2])
     makeNetwork()
 
 def removePC(id):
     if id in pc_hash:
         pc_hash[id].removePC()
         activePC.remove(id)
+        graph.remove_node(id)
         heapq.heappush(newPCId,id)
         makeNetwork()
     
@@ -43,12 +56,19 @@ def removePC(id):
         print("PC does not exsist")
 
 # Dont run makeNetwork()
-def deleteLinks(pc1Id,pc2Id):
+def deleteLink(pc1Id,pc2Id):
     if pc1Id in pc_hash and pc2Id in pc_hash and pc2Id in pc_hash[pc1Id].neighbourList:
         pc_hash[pc1Id].deleteLink(pc2Id)
+        graph.remove_edge(pc1Id, pc2Id)
+        print("PC removed successfully.")
     
     else:
-        print("One or both PC does not exsist or link does not exsist")
+        if pc1Id not in pc_hash:
+            print("PC1 does not exsist")
+        elif pc2Id not in pc_hash:
+            print("PC2 does not exsist")
+        else:
+            print("Link does not exsist")
 
 def makeNetwork():
     for key in pc_hash:
@@ -57,9 +77,11 @@ def makeNetwork():
 def pathTracing(pc1Id,pc2Id):
     if pc1Id==pc2Id:
         print("Both PC are same")
+        return []
     
     elif len(pc_hash[pc1Id].routingTable)<=pc2Id or pc_hash[pc1Id].routingTable[pc2Id][0] == float('inf'):
         print("PC2 is unreachable from PC1")
+        return []
 
     elif pc1Id in pc_hash and pc2Id in pc_hash:
         path=[pc1Id]
@@ -75,13 +97,60 @@ def pathTracing(pc1Id,pc2Id):
             print(path[i]," -> ",path[i+1])
         
         print("Total Cost is ",pc_hash[pc1Id].routingTable[pc2Id][0])
+        return path
 
     else:
         print("One or both PC does not exsist")
 
-def printActivePC():
-    print(activePC)
+def visualizeNetwork():
+    graphviz_graph = graphviz.Graph()
+    graphviz_graph.attr(rankdir='LR',nodesep='1',ranksep='1')
+    graphviz_graph.edge_attr.update(fontsize='25')
 
+    for node in graph.nodes():
+        graphviz_graph.node(str(node), color='lightblue', style='filled', width='0.7', height='0.7', shape='ellipse', fontsize='25')
+
+    for edge in graph.edges(data=True):
+        pc1Id, pc2Id, cost = edge
+        graphviz_graph.edge(str(pc1Id),str(pc2Id), label=str(cost['cost']),penwidth='4',color='blue',fontcolor='blue')
+
+    graphviz_graph.render('graph', format='png', view=True)
+
+def visualizeShortestPath(pc1Id,pc2Id):
+    path=pathTracing(pc1Id, pc2Id)
+    if(len(path)==0):
+        return
+
+    graphviz_graph = graphviz.Graph()
+    graphviz_graph.attr(rankdir='LR',nodesep='1',ranksep='1')
+    graphviz_graph.edge_attr.update(fontsize='25')
+
+    for node in graph.nodes():
+        graphviz_graph.node(str(node), color='orange' if node in path else 'lightblue', style='filled', width='0.7', height='0.7', shape='ellipse', fontsize='25')
+    
+    for edge in graph.edges(data=True):
+        pc1Id, pc2Id, cost = edge
+        if pc1Id in path and pc2Id in path and abs(path.index(pc1Id)-path.index(pc2Id))==1:
+            graphviz_graph.edge(str(pc1Id),str(pc2Id), label=str(cost['cost']),penwidth='4',color='red',fontcolor='red')
+        else:
+            graphviz_graph.edge(str(pc1Id),str(pc2Id), label=str(cost['cost']),penwidth='4',color='blue',fontcolor='blue')    
+    graphviz_graph.render('graph', format='png', view=True)
+
+def printActivePC():
+    print("Currently active PCs are: ",activePC)
+
+def printMenu():
+    print("\n\nWelcome to Network Simulator\n")
+    print("\nSelect an option")
+    print("1 : Add new PCs to the Network")
+    print("2 : Add Links between 2 PCs")
+    print("3 : Remove a PC from the Network")
+    print("4 : Remove a link between 2 PCs")
+    print("5 : Print currently Active PCs")
+    print("6 : Print Routing Table of PC")
+    print("7 : Visualize the network")
+    print("8 : Print shortest path from one PC to another")
+    print("9 : Exit")
 
 def menu(option):
     match option:
@@ -92,91 +161,46 @@ def menu(option):
             addLinks()
             print("Links added.")
         case '3':
-            pcId = int(input("Enter PC ID to print routing table: "))
-            if pcId in pc_hash:
-                print(pc_hash[pcId].routingTable)
-            else:
-                print("PC does not exist.")
+            pcId = int(input("Enter PC ID to remove: "))
+            removePC(pcId)
         case '4':
             pc1Id = int(input("Enter PC1 ID: "))
             pc2Id = int(input("Enter PC2 ID: "))
-            pathTracing(pc1Id, pc2Id)
+            deleteLink(pc1Id,pc2Id)
         case '5':
-            pc1Id = int(input("Enter PC1 ID: "))
-            pc2Id = int(input("Enter PC2 ID: "))
-            deleteLinks(pc1Id,pc2Id)
-        case '6':
-            pcId = int(input("Enter PC ID to remove: "))
-            removePC(pcId)
-            print("PC removed if it existed.")
-        case '7':
             print("Currently active PCs:")
             printActivePC()
+        case '6':
+            pcId = int(input("Enter PC ID to print routing table: "))
+            if pcId in pc_hash:
+                print("PCiD [Cost,Via]")
+                for i in range(1,len(pc_hash[pcId].routingTable)):
+                    print(i,"  ",pc_hash[pcId].routingTable[i])
+            else:
+                print("PC does not exist.")
+        case '7':
+            visualizeNetwork()
+        case '8':
+            pc1Id = int(input("Enter PC1 ID: "))
+            pc2Id = int(input("Enter PC2 ID: "))
+            visualizeShortestPath(pc1Id, pc2Id)
         case _:
             print("Invalid option. Please try again.")
 
-while True:
-    print("\n\nWelcome to Network Simulator\n")
-    print("\nSelect an option")
-    print("1 : Add new PCs to the Network")
-    print("2 : Add Links between 2 PCs")
-    print("3 : Print Routing Table of PC")
-    print("4 : Print shortest path from one PC to another")
-    print("5 : Remove a link between 2 PCs")
-    print("6 : Remove a PC from the Network")
-    print("7 : Print currently Active PCs")
-    print("8 : Exit")
 
-    option = input("Enter your choice: ")
-    print("\033c", end="")
-    print("Network Simulator\n")
-    if option == '8':
-        break
-    menu(option)
-    time.sleep(0.5)
-    
+def main():
+    while True:
+        printMenu()
+        option = input("Enter your choice: ")
+        print("\033c", end="")
+        print("Network Simulator\n")
+        if option == '9':
+            break
 
+        try:
+            menu(option)
+        except Exception as e:
+            print("Oops some error occured!! Try again")
+        time.sleep(1)
 
-
-
-
-
-
-# addNewPC()
-# addNewPC()
-# addNewPC()
-# addNewPC()
-# addNewPC()
-# addNewPC()
-# addNewPC()
-
-# printActivePC()
-# pc_hash[1].addLink(2, 40)
-# pc_hash[1].addLink(3, 10)
-# pc_hash[1].addLink(4, 15)
-# pc_hash[2].addLink(3, 5)
-# pc_hash[2].addLink(5, 25)
-# pc_hash[3].addLink(5, 20)
-# pc_hash[3].addLink(4, 30)
-# pc_hash[4].addLink(6, 10)
-# pc_hash[5].addLink(6, 5)
-# pc_hash[6].addLink(7, 1)
-
-# makeNetwork()
-
-# addLinks()
-# print(pc_hash[1].routingTable)
-
-# pathTracing(1,7)
-
-
-# deleteLinks(4,6)
-# deleteLinks(2,3)
-# deleteLinks(6,7)
-
-
-# pathTracing(1,7)
-
-# addLinks()
-
-# addNewPc, addLinks, routing table print, pathTracing, remove pc, active pc
+main()
