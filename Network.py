@@ -6,7 +6,6 @@ activePC = set()
 
 heapq.heapify(newPCId)
 
-
 def addNewPCs():
     pcToAdd = int(input("Enter Number of PCs To Add: "))
     while pcToAdd>0:
