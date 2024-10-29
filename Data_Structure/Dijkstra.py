@@ -12,7 +12,7 @@ def shortestPathAlgo(srcId,pc_hash):
     distance[srcId]=0
     via[srcId]=srcId
     pq=PriorityQueue()
-    pq.push([0,srcId,srcId]) # Distance,ID
+    pq.push([0,srcId,srcId]) # [Distance to reach PCID, PCID, ViaPC]
     parent[srcId]=srcId
 
     while not pq.isEmpty():
@@ -35,6 +35,7 @@ def shortestPathAlgo(srcId,pc_hash):
                 via[neighbourID]=topVia
                 pq.push([newDistance, neighbourID,neighbourID if topID==srcId else topVia])
     
+    #Adding links used in shortest path
     for id in pc_hash:
         if parent[id] != -1 and id != parent[id]:
             linksUsed.add(str(min(id,parent[id]))+"Connects"+str(max(id,parent[id])))

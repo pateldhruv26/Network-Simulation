@@ -33,9 +33,9 @@ def addLinks():
     
         else:
             if pc1Id not in pc_hash:
-                print("PC1 does not exsist")
+                print("PC1 does not exist")
             elif pc2Id not in pc_hash:
-                print("PC2 does not exsist")
+                print("PC2 does not exist")
             else:
                 print("Same PC not allowed")
     
@@ -51,24 +51,25 @@ def removePC(id):
         graph.remove_node(id)
         heapq.heappush(newPCId,id)
         makeNetwork()
+        print("PC removed successfully")
     
     else:
-        print("PC does not exsist")
+        print("PC does not exist")
 
 # Dont run makeNetwork()
 def deleteLink(pc1Id,pc2Id):
     if pc1Id in pc_hash and pc2Id in pc_hash and pc2Id in pc_hash[pc1Id].neighbourList:
         pc_hash[pc1Id].deleteLink(pc2Id)
         graph.remove_edge(pc1Id, pc2Id)
-        print("PC removed successfully.")
+        print("Link removed successfully.")
     
     else:
         if pc1Id not in pc_hash:
-            print("PC1 does not exsist")
+            print("PC1 does not exist")
         elif pc2Id not in pc_hash:
-            print("PC2 does not exsist")
+            print("PC2 does not exist")
         else:
-            print("Link does not exsist")
+            print("Link does not exist")
 
 def makeNetwork():
     for key in pc_hash:
@@ -100,7 +101,7 @@ def pathTracing(pc1Id,pc2Id):
         return path
 
     else:
-        print("One or both PC does not exsist")
+        print("One or both PC does not exist")
 
 def visualizeNetwork():
     graphviz_graph = graphviz.Graph()

@@ -4,9 +4,9 @@ pc_hash={}
 class PCNode:
     def __init__(self,id):
         self.id=id;
-        self.neighbourList={} #adj list
-        self.routingTable=[0] #Dijkstra #[Cost , Via]
-        self.linkUsed=set() 
+        self.neighbourList={} # Adjacency List for the PC
+        self.routingTable=[0] # Table: PCID -> [Cost to reach PCID, Via]
+        self.linkUsed=set()   # Links Used in Dijkstra's Shortest Path
 
         self.updatePcHashTable()
     

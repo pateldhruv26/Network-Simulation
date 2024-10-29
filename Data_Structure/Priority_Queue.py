@@ -12,11 +12,16 @@ class MinHeap:
         return index * 2 + 2
 
     def insert(self, val):
-        # Insert a new element (list of [cost, pcID])
+        # Insert a new element as list of [cost, pcID] at the end of heap tree.
+        # Then Heapify the tree upwards to maintain the min-heap property.
+
         self.heap.append(val)
         self._heapify_up(len(self.heap) - 1)
 
     def extract_min(self):
+        #If the minHeap has atleast one element then pop root element 
+        #Then Heapify the tree downwards to restore the min-heap property.
+
         if len(self.heap) == 0:
             return None
         if len(self.heap) == 1:
@@ -60,13 +65,14 @@ class PriorityQueue:
         self.min_heap = MinHeap()
 
     def push(self, list):
-        # Push a new item as a list of [cost, pcID,parent]
+        # Push a new item as a list of [cost, pcID, parent]
         self.min_heap.insert(list)
 
     def pop(self):
         return self.min_heap.extract_min()
 
     def peek(self):
+        #Returns the root/minimum element of the heap
         return self.min_heap.peek()
 
     def print_queue(self):
