@@ -23,16 +23,29 @@ This project is a simulation of a real-world **Link-State Routing Algorithm**, a
 ## Usage
 
 1. **Initial Terminal Interface**
-   ![Initial Interface](./Photos/initial.png)
 
-2. **Printing Routing Table**
-   ![Routing Table](./Photos/routing.png)
+   ![Initial Terminal Interface](./Photos/initial.png)
 
-3. **Visualizing the Network Graph**
-   ![Graph Visualization](./Photos/graph.png)
+   When you start the Network Simulator, you’re presented with a menu to choose actions like adding/removing PCs and links, viewing routing tables, and visualizing the network.
+
+2. **Printing Routing Table of a Router**
+
+   ![Printing Routing Table](./Photos/routing.png)
+
+   This option allows you to see the routing table for a specific PC, which includes paths and costs.
+
+3. **Visualizing the Whole Network**
+
+   ![Network Visualization](./Photos/graph.png)
+
+   This displays the entire network graph with all routers and connections, as created in the simulator.
 
 4. **Visualizing the Shortest Path**
+
    ![Shortest Path Visualization](./Photos/shortest.png)
+
+   Shows the shortest path between two PCs, calculated using Dijkstra’s algorithm.
+
 
 ## How to Run
 
